@@ -1,4 +1,6 @@
-# Mario 2D Game Engine
+![2D-Engine](assets/Banner.png)
+
+# 2D Game Engine
 
 A 2D game engine built from scratch in Java using LWJGL and OpenGL, structured around a Super Mario clone. This is a learning project following the GamesWithGabe course on freeCodeCamp.
 
