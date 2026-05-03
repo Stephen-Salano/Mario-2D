@@ -29,6 +29,16 @@ public class MouseListener {
         return MouseListener.instance;
     }
 
+    /**
+     * GLFW callback — called automatically whenever the mouse cursor moves within the window.
+     * Do not call this method manually; GLFW invokes it and fills all parameters.
+     * Saves the previous position before updating, enabling delta (movement) calculation.
+     * Also updates the dragging state based on whether any mouse button is currently held.
+     *
+     * @param window the GLFW window handle where the event occurred
+     * @param xpos   the new x position of the cursor in pixels, from the left edge of the window
+     * @param ypos   the new y position of the cursor in pixels, from the top edge of the window
+     */
     public static void  mousePosCallback(long window, double xpos, double ypos){
         // Setting the last X and Y positions of the mouse before setting it to the new y
         get().lastX = get().xPos;
@@ -39,8 +49,18 @@ public class MouseListener {
     }
 
 
-    // mod is like if you press CTRL while clicked
-    //The callback function receives the mouse button, button action and modifier bits.
+    /**
+     * GLFW callback — called automatically whenever a mouse button is pressed or released.
+     * Do not call this method manually; GLFW invokes it and fills all parameters.
+     *
+     * @param window the GLFW window handle where the event occurred
+     * @param button the mouse button that triggered the event
+     *               (0 = left, 1 = right, 2 = middle)
+     * @param action what happened to the button
+     *               (GLFW_PRESS = 1 means pressed, GLFW_RELEASE = 0 means released)
+     * @param mods   modifier keys held during the click, as bit flags
+     *               (e.g. GLFW_MOD_CONTROL if Ctrl was held)
+     */
     public static void mousButtonCallback(long window, int button, int action, int mods){
 
         // Checking if a button was pressed or released

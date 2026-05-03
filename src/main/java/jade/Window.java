@@ -3,6 +3,7 @@ package jade;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
+import util.Time;
 
 import java.util.Objects;
 
@@ -13,13 +14,20 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window {
 
-    private int width, height;
+    private int width;
+    private int height;
     private String title;
     private long glfwWindow;
-    private float r, g, b, a;
+    public float r;
+    public float g;
+    public float b;
+    public float a;
     private boolean fadeToBlack = false;
 
     private static Window window = null; // singleton
+
+    // We want our window to be able to switch between scenes
+    private static Scene currentScene;
 
     private Window() {
         this.width = 1920;
@@ -29,6 +37,20 @@ public class Window {
         g = 1;
         b = 1;
         a = 1;
+    }
+
+    public static void changeScene(int newScene){
+        switch (newScene){
+            case 0:
+                currentScene = new LevelEditorScene();
+                break;
+            case 1:
+                currentScene = new LevelScene();
+                break;
+            default:
+                assert false : "Unknown Scene '" + newScene + "'";
+                break;
+        }
     }
 
     public static Window get(){
@@ -53,7 +75,7 @@ public class Window {
     }
 
     public void init(){
-        // Setup an error callback
+        // Set up an error callback
         GLFWErrorCallback.createPrint(System.err).set(); // creates printing method for where the errors will be printed to
 
         // initialize GLFW
@@ -84,6 +106,7 @@ public class Window {
         // Make the OpenGL context current
         glfwMakeContextCurrent(glfwWindow);
         // Enable v-sync
+        // Locks frame rate to refresh rate of our window
         glfwSwapInterval(1);
 
         // make window visible
@@ -96,26 +119,37 @@ public class Window {
         // bindings available for use.
         GL.createCapabilities();
 
+        Window.changeScene(0);
+
     }
 
     public void loop(){
+        float beginTime = Time.getTime();
+        float endTime = Time.getTime();
+        float dt = -1.0f;
+
         while (!glfwWindowShouldClose(glfwWindow)){
             // poll events
             glfwPollEvents();
 
             glClearColor(r, g, b , a);
             glClear(GL_COLOR_BUFFER_BIT);
-            if (fadeToBlack){
-                // decrease r, g, b in equal distance until it fades to black
-                r = Math.max(r -0.01f, 0);
-                g = Math.max(g - 0.01f, 0);
-                b = Math.max(b - 0.01f, 0);
-            }
 
-            if (KeyListener.isKeyPressed(GLFW_KEY_SPACE)){
-                fadeToBlack = true;
-            }
+            if (dt >= 0)
+                currentScene.update(dt);
+
             glfwSwapBuffers(glfwWindow);
+
+            /*
+            - Begin time is initialized at the top of the `loop()` function
+            - We run the entire game loop
+            - We get to `endTime` and record the time we're at
+            - We subtract endTime from beginTime, which gives us the time elapsed to do all the game loop things giving us our dt(delta time)
+            - Finally we set the beginTime to endTime for the next loop
+             */
+            endTime = Time.getTime();
+             dt = endTime - beginTime;
+            beginTime = endTime;
         }
     }
 }
