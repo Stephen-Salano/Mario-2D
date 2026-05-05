@@ -43,9 +43,11 @@ public class Window {
         switch (newScene){
             case 0:
                 currentScene = new LevelEditorScene();
+                currentScene.init();
                 break;
             case 1:
                 currentScene = new LevelScene();
+                currentScene.init();
                 break;
             default:
                 assert false : "Unknown Scene '" + newScene + "'";
@@ -76,6 +78,7 @@ public class Window {
 
     public void init(){
         // Set up an error callback
+        // Todo: wrap in try with resources
         GLFWErrorCallback.createPrint(System.err).set(); // creates printing method for where the errors will be printed to
 
         // initialize GLFW

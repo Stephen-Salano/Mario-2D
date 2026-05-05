@@ -10,6 +10,9 @@ public abstract class Scene {
     protected Scene() {
     }
 
+    public void init(){
+    }
+
     /**
      * Called once every frame by the game loop.
      * Use dt to make movement and transitions frame-rate independent.
